@@ -5,3 +5,4 @@ package-lock.json
 # MISC
 .env
 .DS_STORE
+dist

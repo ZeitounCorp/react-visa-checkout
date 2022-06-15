@@ -6,7 +6,6 @@
 - Easy to use: As simple as rendering a `<VisaCheckout />` component in your application.
 - Supports latest React version: The Visa Checkout SDK is compatible with the latest version of React.
 - Includes all the features of the Visa Checkout SDK and should be maintained in sync with the latest version at all time.
-- Contains helpers hooks to simplify the integration of Visa Checkout into your application.
 
 ## tl;dr
 
@@ -30,7 +29,7 @@ Your project needs to use React 16.3 or later.
 
 ### Installation
 
-Add React-Calendar to your project by executing `npm install react-visa-checkout` or `yarn add react-visa-checkout`.
+Add React-Visa-Checkout to your project by executing `npm install react-visa-checkout` or `yarn add react-visa-checkout`.
 
 ## License
 
