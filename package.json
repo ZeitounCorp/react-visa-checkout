@@ -1,6 +1,6 @@
 {
   "name": "react-visa-checkout",
-  "version": "0.0.15",
+  "version": "0.0.2",
   "description": "Wrapper for Visa Checkout© Javascript SDK",
   "scripts": {
     "rollup": "rollup -c"
