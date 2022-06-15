@@ -1,7 +1,8 @@
 {
   "name": "react-visa-checkout",
-  "version": "0.0.2",
+  "version": "0.0.21",
   "description": "Wrapper for Visa Checkout© Javascript SDK",
+  "repository": "git://github.com/ZeitounCorp/react-visa-checkout.git",
   "scripts": {
     "rollup": "rollup -c"
   },
