@@ -25,7 +25,7 @@ React-Visa-Checkout is not an official library and is under constant development
 
 ### Compatibility
 
-Your project needs to use React 16.3 or later.
+Your project needs to use React 18.2 or later.
 
 ### Installation
 

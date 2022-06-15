@@ -4,9 +4,18 @@ import { SDK_PATH_PRODUCTION, SDK_PATH_SANDBOX, STANDARD_BUTTON_ASSET_PRODUCTION
 
 export type VisaEvents = 'payment.success' | 'payment.cancel' | 'payment.error';
 
-declare namespace V {
-  function init(props: VisaCheckoutButtonProps | any): void;
-  function on(event: VisaEvents, callback: Function): void;
+export interface VisaV {
+  init(props: VisaCheckoutButtonProps | any): void;
+  on(event: VisaEvents, callback: Function): void;
+  initializeVsb(): void;
+  setOptions: (options: any) => void;
+}
+
+declare global {
+  interface Window {
+    V: VisaV;
+    loaded: boolean;
+  }
 }
 
 export type CardBrands = 'VISA' | 'MASTERCARD' | 'AMEX' | 'DISCOVER' | 'ELECTRON' | 'ELO';
@@ -125,12 +134,12 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
   useEffect(() => {
     // ** V will be defined once the the script (Visa SDK) is loaded.
     // ** This is a workaround for the fact that the script is not loaded in the regular dom.
-    if (typeof V === 'undefined') {
+    if (typeof window.V === 'undefined') {
       console.log('Visa Checkout SDK not loaded yet.');
       return;
     } else {
-      console.log('Visa Checkout SDK loaded.', V);
-      V.init({
+      console.log('Visa Checkout SDK loaded.', window.V);
+      window.V.init({
         apiKey,
         encryptionKey,
         externalClientId,
@@ -154,25 +163,25 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
         },
       });
     }
-  }, [V]);
+  }, [window.V, window.loaded]);
 
   // ** Register visa checkout event handlers.
   useEffect(() => {
-    if (typeof V === 'undefined') {
+    if (typeof window.V === 'undefined') {
       console.log('Visa Checkout SDK not loaded yet.');
       return;
     } else {
-      V.on('payment.success', (payment: any) => {
+      window.V.on('payment.success', (payment: any) => {
         onSuccess(payment);
       });
-      V.on('payment.error', (payment: any, error: any) => {
+      window.V.on('payment.error', (payment: any, error: any) => {
         onError(payment, error);
       });
-      V.on('payment.cancel', (payment: any) => {
+      window.V.on('payment.cancel', (payment: any) => {
         onCancel(payment);
       });
     }
-  }, [V]);
+  }, [window.V, window.loaded]);
 
   // ** Helper to generate the button props
   const getButtonProps = () => {
@@ -193,10 +202,10 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
       buttonProps.locale = buttonLocale;
     }
     if (buttonCardBrands) {
-      buttonProps.cardBrands = buttonCardBrands.join(',');
+      buttonProps.cardbrands = buttonCardBrands.join(',');
     }
     if (buttonAcceptCanadianVisaDebit) {
-      buttonProps.acceptCanadianVisaDebit = buttonAcceptCanadianVisaDebit.toString();
+      buttonProps.acceptcanadianvisadebit = buttonAcceptCanadianVisaDebit.toString();
     }
     return buttonProps;
   };
@@ -204,13 +213,19 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
   return (
     <Fragment>
       <Helmet>
-        <head>
-          <script type="text/javascript" src={sandbox ? SDK_PATH_SANDBOX : SDK_PATH_PRODUCTION}></script>
-        </head>
+        <script type="text/javascript" src={sandbox ? SDK_PATH_SANDBOX : SDK_PATH_PRODUCTION}></script>
+        <script type="text/javascript">
+          {`
+            function onVisaCheckoutReady() {
+              window.loaded = true;
+            }
+          `}
+        </script>
       </Helmet>
       <img
         alt="Visa Checkout"
         className={`v-button ${className}`}
+        style={{ cursor: 'pointer' }}
         role="button"
         {...getButtonProps()}
         src={sandbox ? STANDARD_BUTTON_ASSET_SANDBOX : STANDARD_BUTTON_ASSET_PRODUCTION}
