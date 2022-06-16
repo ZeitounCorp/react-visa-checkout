@@ -1,5 +1,4 @@
-import React, { FC, Fragment, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import { SDK_PATH_PRODUCTION, SDK_PATH_SANDBOX, STANDARD_BUTTON_ASSET_PRODUCTION, STANDARD_BUTTON_ASSET_SANDBOX } from '../../utils';
 
 export type VisaEvents = 'payment.success' | 'payment.cancel' | 'payment.error';
@@ -131,16 +130,18 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
   buttonAcceptCanadianVisaDebit = false,
   className = '',
 }) => {
+  const [isLoadingVisaScript, setIsLoadingVisaScript] = useState(true);
+
   useEffect(() => {
     // ** V will be defined once the the script (Visa SDK) is loaded.
     // ** This is a workaround for the fact that the script is not loaded in the regular dom.
-    if (typeof window.V === 'undefined') {
+    if (!window || !window.V) {
       console.log('Visa Checkout SDK not loaded yet.');
       return;
     } else {
       console.log('Visa Checkout SDK loaded.', window.V);
       window.V.init({
-        apiKey,
+        apikey: apiKey,
         encryptionKey,
         externalClientId,
         referenceCallID,
@@ -150,7 +151,7 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
           displayName: displayMerchantName,
           shipping: {
             ...settings.shipping,
-            collectShipping: collectShipping.toString(),
+            collectShipping: collectShipping,
           },
         },
         paymentRequest: {
@@ -163,11 +164,11 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
         },
       });
     }
-  }, [window.V, window.loaded]);
+  }, [window, window.V, isLoadingVisaScript]);
 
   // ** Register visa checkout event handlers.
   useEffect(() => {
-    if (typeof window.V === 'undefined') {
+    if (!window || !window.V) {
       console.log('Visa Checkout SDK not loaded yet.');
       return;
     } else {
@@ -178,10 +179,23 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
         onError(payment, error);
       });
       window.V.on('payment.cancel', (payment: any) => {
+        console.log("cancelled")
         onCancel(payment);
       });
     }
-  }, [window.V, window.loaded]);
+  }, [window, window.V, isLoadingVisaScript]);
+
+  // ** Registering the script responsible for loading the Visa Checkout SDK.
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = sandbox ? SDK_PATH_SANDBOX : SDK_PATH_PRODUCTION;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setIsLoadingVisaScript(false);
+    };
+    document.body.appendChild(script);
+  }, []);
 
   // ** Helper to generate the button props
   const getButtonProps = () => {
@@ -212,16 +226,6 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
 
   return (
     <Fragment>
-      <Helmet>
-        <script type="text/javascript" src={sandbox ? SDK_PATH_SANDBOX : SDK_PATH_PRODUCTION}></script>
-        <script type="text/javascript">
-          {`
-            function onVisaCheckoutReady() {
-              window.loaded = true;
-            }
-          `}
-        </script>
-      </Helmet>
       <img
         alt="Visa Checkout"
         className={`v-button ${className}`}

@@ -13,8 +13,8 @@ const Template: ComponentStory<typeof VisaCheckoutButton> = (args) => <VisaCheck
 
 export const VisaCheckoutExample = Template.bind({});
 VisaCheckoutExample.args = {
-  apiKey: 'ABC',
-  encryptionKey: 'DEF',
+  apiKey: 'Your_API_Key',
+  encryptionKey: 'Your_Encryption_Key',
   collectShipping: false,
   currencyCode: 'USD',
   subTotal: 100,

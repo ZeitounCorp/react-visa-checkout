@@ -7,8 +7,8 @@ describe('VisaCheckoutButton', () => {
   test('renders the VisaCheckoutButton component', () => {
     render(
       <VisaCheckoutButton
-        apiKey="ABC"
-        encryptionKey="DEF"
+        apiKey="Your_API_Key"
+        encryptionKey="Your_Encryption_Key"
         collectShipping={false}
         currencyCode={'USD'}
         sandbox={true}
