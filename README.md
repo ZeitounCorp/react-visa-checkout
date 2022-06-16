@@ -3,15 +3,15 @@
 **Porting the Visa Checkout SDK to React**
 
 - Lightweight: The Visa Checkout SDK is a small, lightweight library that can be used to integrate Visa Checkout into your application.
-- Easy to use: As simple as rendering a `<VisaCheckout />` component in your application.
+- Easy to use: As simple as rendering a `<VisaCheckoutButton />` component in your application.
 - Supports latest React version: The Visa Checkout SDK is compatible with the latest version of React.
 - Includes all the features of the Visa Checkout SDK and should be maintained in sync with the latest version at all time.
 
 ## tl;dr
 
 - Install by executing `npm install react-visa-checkout` or `yarn add react-visa-checkout`.
-- Import by adding `import VisaCheckout from 'react-visa-checkout'`.
-- Use by adding `<VisaCheckout />`.
+- Import by adding `import VisaCheckoutButton from 'react-visa-checkout'`.
+- Use by adding `<VisaCheckoutButton />`.
 
 ## Demo
 
