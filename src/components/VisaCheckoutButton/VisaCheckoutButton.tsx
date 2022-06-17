@@ -179,7 +179,7 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
         onError(payment, error);
       });
       window.V.on('payment.cancel', (payment: any) => {
-        console.log("cancelled")
+        console.log('cancelled');
         onCancel(payment);
       });
     }
@@ -197,43 +197,37 @@ const VisaCheckoutButton: FC<VisaCheckoutButtonProps> = ({
     document.body.appendChild(script);
   }, []);
 
-  // ** Helper to generate the button props
-  const getButtonProps = () => {
-    const buttonProps = {} as any;
+  // ** Helper to generate the button query params props
+  const getButtonProps = (): string => {
+    const baseURL = sandbox ? STANDARD_BUTTON_ASSET_SANDBOX : STANDARD_BUTTON_ASSET_PRODUCTION;
+    let query = '';
     if (buttonSize) {
-      buttonProps.size = buttonSize;
+      query += `size=${buttonSize}&`;
     }
     if (buttonHeight && !buttonSize) {
-      buttonProps.height = buttonHeight;
+      query += `height=${buttonHeight}&`;
     }
     if (buttonWidth && !buttonSize) {
-      buttonProps.width = buttonWidth;
+      query += `width=${buttonWidth}&`;
     }
     if (buttonColor) {
-      buttonProps.color = buttonColor;
+      query += `color=${buttonColor}&`;
     }
     if (buttonLocale) {
-      buttonProps.locale = buttonLocale;
+      query += `locale=${buttonLocale}&`;
     }
     if (buttonCardBrands) {
-      buttonProps.cardbrands = buttonCardBrands.join(',');
+      query += `cardBrands=${buttonCardBrands.join(',').toUpperCase()}&`;
     }
     if (buttonAcceptCanadianVisaDebit) {
-      buttonProps.acceptcanadianvisadebit = buttonAcceptCanadianVisaDebit.toString();
+      query += `acceptCanadianVisaDebit=${buttonAcceptCanadianVisaDebit}&`;
     }
-    return buttonProps;
+    return baseURL + `?${query}`;
   };
 
   return (
     <Fragment>
-      <img
-        alt="Visa Checkout"
-        className={`v-button ${className}`}
-        style={{ cursor: 'pointer' }}
-        role="button"
-        {...getButtonProps()}
-        src={sandbox ? STANDARD_BUTTON_ASSET_SANDBOX : STANDARD_BUTTON_ASSET_PRODUCTION}
-      />
+      <img alt="Visa Checkout" className={`v-button ${className}`} style={{ cursor: 'pointer' }} role="button" src={getButtonProps()} />
     </Fragment>
   );
 };
